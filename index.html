@@ -1,14 +1,524 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>My Game Site</title>
-</head>
-<body style="text-align:center; font-family:Arial;">
-  <h1>🎮 My First Game Site</h1>
-  <p>Welcome to my learning game platform</p>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Playbox | Multi‑Column Game Cards</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  <button onclick="alert('Game Started!')">
-    Play Game
-  </button>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0c12;
+            color: #eef2ff;
+            line-height: 1.5;
+        }
+
+        /* Custom scroll */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1e2a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ff5f2c;
+            border-radius: 10px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header – glass effect */
+        .header {
+            background: rgba(10, 12, 18, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 95, 44, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 14px 0;
+        }
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 18px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-icon {
+            background: linear-gradient(135deg, #ff5f2c, #ff8a5c);
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            box-shadow: 0 6px 14px rgba(255, 95, 44, 0.3);
+        }
+        .logo-icon i {
+            font-size: 24px;
+            color: white;
+        }
+        .logo-text h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(120deg, #ffffff, #ffbc9a);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .logo-text p {
+            font-size: 0.7rem;
+            color: #9aa4bf;
+        }
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            list-style: none;
+        }
+        .nav-links a {
+            color: #e2e8f0;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .nav-links a:hover {
+            color: #ff5f2c;
+        }
+        .search-box {
+            background: #1e212e;
+            border-radius: 60px;
+            padding: 6px 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #2f3548;
+        }
+        .search-box i {
+            color: #ff8a5c;
+        }
+        .search-box input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            width: 170px;
+        }
+        .search-box input::placeholder {
+            color: #7c85a0;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            margin: 60px 0 40px;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 95, 44, 0.12);
+            border: 1px solid rgba(255, 95, 44, 0.4);
+            padding: 5px 16px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #ffaa80;
+            margin-bottom: 18px;
+        }
+        .hero h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff, #ffaf85);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .hero p {
+            max-width: 650px;
+            margin: 18px auto 0;
+            color: #b9c3d8;
+        }
+
+        /* Section title */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            margin: 48px 0 28px;
+        }
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            position: relative;
+        }
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #ff5f2c;
+            border-radius: 4px;
+        }
+        .filter-hint {
+            font-size: 0.8rem;
+            color: #9aa4bf;
+        }
+
+        /* Multi‑column grid – 4 to 6 columns on desktop */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 28px;
+            margin-bottom: 70px;
+        }
+
+        /* Game card – compact & premium */
+        .game-card {
+            background: #12141e;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid #252a3a;
+            transition: all 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(2px);
+        }
+        .game-card:hover {
+            transform: translateY(-6px);
+            border-color: #ff5f2c;
+            box-shadow: 0 18px 30px -12px rgba(255, 95, 44, 0.25);
+        }
+        .card-img {
+            height: 150px;
+            background: linear-gradient(145deg, #1a1e2c, #10131e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border-bottom: 1px solid #232837;
+        }
+        .card-img i {
+            font-size: 3.2rem;
+            color: #ff8a5c;
+            opacity: 0.8;
+            transition: 0.2s;
+        }
+        .game-card:hover .card-img i {
+            transform: scale(1.05);
+            opacity: 1;
+        }
+        .category-tag {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: #ff5f2c;
+            padding: 3px 10px;
+            border-radius: 40px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: white;
+            text-transform: uppercase;
+        }
+        .card-content {
+            padding: 16px 16px 12px;
+        }
+        .card-content h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .card-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 0.65rem;
+            color: #8d99ae;
+            margin-bottom: 10px;
+        }
+        .card-meta i {
+            margin-right: 3px;
+        }
+        .card-content p {
+            font-size: 0.75rem;
+            color: #cbd5e6;
+            line-height: 1.4;
+            margin-bottom: 15px;
+        }
+        .play-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #ff5f2c;
+            color: white;
+            padding: 8px 0;
+            border-radius: 32px;
+            font-weight: 600;
+            font-size: 0.7rem;
+            text-decoration: none;
+            transition: 0.2s;
+            border: none;
+            width: 100%;
+            cursor: pointer;
+        }
+        .play-btn:hover {
+            background: #ff784e;
+            gap: 12px;
+        }
+        .card-footer {
+            padding: 8px 16px 16px;
+            border-top: 1px solid #202433;
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.65rem;
+            color: #7a85a3;
+        }
+
+        /* Footer */
+        .footer {
+            background: #06080e;
+            border-top: 1px solid #202433;
+            padding: 48px 0 28px;
+            margin-top: 20px;
+        }
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 35px;
+        }
+        .footer-col h4 {
+            font-size: 1rem;
+            margin-bottom: 14px;
+            color: white;
+        }
+        .footer-col a {
+            display: block;
+            color: #8e9aaf;
+            text-decoration: none;
+            margin-bottom: 8px;
+            font-size: 0.8rem;
+            transition: 0.2s;
+        }
+        .footer-col a:hover {
+            color: #ff5f2c;
+        }
+        .copyright {
+            text-align: center;
+            margin-top: 45px;
+            padding-top: 20px;
+            border-top: 1px solid #1a1e2c;
+            font-size: 0.7rem;
+            color: #5f6c84;
+        }
+
+        /* Mobile: force 1 column */
+        @media (max-width: 720px) {
+            .container {
+                padding: 0 18px;
+            }
+            .hero h2 {
+                font-size: 2rem;
+            }
+            .header-inner {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            .nav-links {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            .search-box {
+                justify-content: center;
+            }
+            .games-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .card-img {
+                height: 140px;
+            }
+        }
+
+        /* Medium screens: 3-4 columns, still fine */
+        @media (min-width: 721px) and (max-width: 1024px) {
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            }
+        }
+
+        button {
+            font-family: inherit;
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="container header-inner">
+        <div class="logo">
+            <div class="logo-icon"><i class="fas fa-cube"></i></div>
+            <div class="logo-text">
+                <h1>PLAY<span style="font-weight:400;">BOX</span></h1>
+                <p>multi‑column · premium index</p>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Discover</a></li>
+            <li><a href="#">Genres</a></li>
+            <li><a href="#">Leaderboard</a></li>
+        </ul>
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search games...">
+        </div>
+    </div>
+</header>
+
+<main class="container">
+    <div class="hero">
+        <div class="hero-badge"><i class="fas fa-crown"></i> 1500+ curated games</div>
+        <h2>Your <span style="color:#ff5f2c;">playground</span> in cards</h2>
+        <p>Fluid grid that adapts from 1 to 6 columns. Scroll and explore – every card is a gateway to adventure.</p>
+    </div>
+
+    <div class="section-header">
+        <h2 class="section-title">Trending now</h2>
+        <span class="filter-hint"><i class="fas fa-chart-simple"></i> popular this week</span>
+    </div>
+
+    <div class="games-grid">
+        <!-- 15 game cards to demonstrate scrolling and multi‑column effect -->
+        <div class="game-card">
+            <div class="card-img"><i class="fas fa-ghost"></i><span class="category-tag">action</span></div>
+            <div class="card-content"><h3>Shadow Hunt</h3><div class="card-meta"><span><i class="fas fa-star"></i> 4.8</span><span><i class="fas fa-download"></i> 9.2k</span></div><p>Stealth combat & fast reflexes.</p></div>
+            <button class="play-btn" onclick="alert('Game demo – full version coming soon')">Play Now <i class="fas fa-arrow-right"></i></button>
+            <div class="card-footer"><span><i class="far fa-clock"></i> arcade</span><span>⚡ 5 min</span></div>
+        </div>
+        <div class="game-card">
+            <div class="card-img"><i class="fas fa-car"></i><span class="category-tag">racing</span></div>
+            <div class="card-content"><h3>Neon Drift</h3><div class="card-meta"><span><i class="fas fa-star"></i> 4.9</span><span><i class="fas fa-download"></i> 12k</span></div><p>Drift through neon cities.</p></div>
+            <button class="play-btn" onclick="alert('Game demo – full version coming soon')">Play Now <i class="fas fa-arrow-right"></i></button>
+            <div class="card-footer"><span><i class="fas fa-tachometer-alt"></i> speed</span><span>🔥 hot</span></div>
+        </div>
+        <div class="game-card">
+            <div class="card-img"><i class="fas fa-puzzle-piece"></i><span class="category-tag">puzzle</span></div>
+            <div class="card-content"><h3>Mind Matrix</h3><div class="card-meta"><span><i class="fas fa-star"></i> 4.7</span><span><i class="fas fa-download"></i> 6.5k</span></div><p>200+ brain teasing puzzles.</p></div>
+            <button class="play-btn" onclick="alert('Game demo – full version coming soon')">Play Now <i class="fas fa-arrow-right"></i></button>
+            <div class="card-footer"><span><i class="fas fa-brain"></i> logic</span><span>🧩 hard</span></div>
+        </div>
+        <div class="game-card">
+            <div class="card-img"><i class="fas fa-robot"></i><span class="category-tag">strategy</span></div>
+            <div class="card-content"><h3>Cyber Commander</h3><div class="card-meta"><span><i class="fas fa-star"></i> 4.6</span><span><i class="fas fa-download"></i> 4.3k</span></div><p>Build & conquer digital empires.</p></div>
+            <button class="play-btn" onclick="alert('Game demo – full version coming soon')">Play Now <i class="fas fa-arrow-right"></i></button>
+            <div class="card-footer"><span><i class="fas fa-chart-line"></i> RTS</span><span>⭐ epic</span></div>
+        </div>
+        <div class="game-card">
+            <div class="card-img"><i class="fas fa-dragon"></i><span class="category-tag">rpg</span></div>
+            <div class="card-content"><h3>Elder Souls</h3><div class="card-meta"><span><i class="fas fa-star"></i> 5.0</span><span><i class="fas fa-download"></i> 21k</span></div><p>Deep fantasy RPG, turn-based.</p></div>
+            <button class="play-btn" onclick="alert('Game demo – full version coming soon')">Play Now <i class="fas fa-arrow-right"></i></button>
+            <div class="card-footer"><span><i class="fas fa-hat-wizard"></i> adventure</span><span>🏆 legendary</span></div>
+        </div>
+        <div class="game-card">
+            <div class="card-img"><i class="fas fa-basketball-ball"></i><span class="category-tag">sports</span></div>
+            <div class="card-content"><h3>Street Hoops</h3><div class="card-meta"><span><i class="fas fa-star"></i> 4.5</span><span><i class="fas fa-download"></i> 3.9k</span></div><p>Dunk & compete 1v1.</p></div>
+            <button class="play-btn" onclick="alert('Game demo – full version coming soon')">Play Now <i class="fas fa-arrow-right"></i></button>
+            <div class="card-footer"><span><i class="fas fa-trophy"></i> arcade</span><span>🏀 2min</span></div>
+        </div>
+        <div class="game-card">
+            <div class="card-img"><i class="fas fa-space-shuttle"></i><span class="category-tag">arcade</span></div>
+            <div class="card-content"><h3>Galactic Rush</h3><div class="card-meta"><span><i class="fas fa-star"></i> 4.8</span><span><i class="fas fa-download"></i> 8.1k</span></div><p>Endless space shooter.</p></div>
+            <button class="play-btn" onclick="alert('Game demo – full version coming soon')">Play Now <i class="fas fa-arrow-right"></i></button>
+            <div class="card-footer"><span><i class="fas fa-rocket"></i> retro</span><span>🚀 classic</span></div>
+        </div>
+        <div class="game-card">
+            <div class="card-img"><i class="fas fa-skull"></i><span class="category-tag">horror</span></div>
+            <div class="card-content"><h3>Midnight Shadows</h3><div class="card-meta"><span><i class="fas fa-star"></i> 4.4</span><span><i class="fas fa-download"></i> 2.8k</span></div><p>Psychological thriller.</p></div>
+            <button class="play-btn" onclick="alert('Game demo – full version coming soon')">Play Now <i class="fas fa-arrow-right"></i></button>
+            <div class="card-footer"><span><i class="fas fa-moon"></i> suspense</span><span>🔦 dark</span></div>
+        </div>
+        <div class="game-card">
+            <div class="card-img"><i class="fas fa-crown"></i><span class="category-tag">adventure</span></div>
+            <div class="card-content"><h3>Kingdom Fall</h3><div class="card-meta"><span><i class="fas fa-star"></i> 4.7</span><span><i class="fas fa-download"></i> 5.2k</span></div><p>Medieval quest & magic.</p></div>
+            <button class="play-btn" onclick="alert('Game demo – full version coming soon')">Play Now <i class="fas fa-arrow-right"></i></button>
+            <div class="card-footer"><span><i class="fas fa-tree"></i> open world</span><span>⚔️ epic</span></div>
+        </div>
+        <div class="game-card">
+            <div class="card-img"><i class="fas fa-chess-queen"></i><span class="category-tag">board</span></div>
+            <div class="card-content"><h3>Chess Legacy</h3><div class="card-meta"><span><i class="fas fa-star"></i> 4.9</span><span><i class="fas fa-download"></i> 14k</span></div><p>Classic chess with modern twist.</p></div>
+            <button class="play-btn" onclick="alert('Game demo – full version coming soon')">Play Now <i class="fas fa-arrow-right"></i></button>
+            <div class="card-footer"><span><i class="fas fa-chess-board"></i> strategy</span><span>♟️ master</span></div>
+        </div>
+        <div class="game-card">
+            <div class="card-img"><i class="fas fa-water"></i><span class="category-tag">casual</span></div>
+            <div class="card-content"><h3>Fish Frenzy</h3><div class="card-meta"><span><i class="fas fa-star"></i> 4.3</span><span><i class="fas fa-download"></i> 3.1k</span></div><p>Relaxing underwater match.</p></div>
+            <button class="play-btn" onclick="alert('Game demo – full version coming soon')">Play Now <i class="fas fa-arrow-right"></i></button>
+            <div class="card-footer"><span><i class="fas fa-fish"></i> chill</span><span>🐟 free</span></div>
+        </div>
+        <div class="game-card">
+            <div class="card-img"><i class="fas fa-meteor"></i><span class="category-tag">shooter</span></div>
+            <div class="card-content"><h3>Doom Bots</h3><div class="card-meta"><span><i class="fas fa-star"></i> 4.6</span><span><i class="fas fa-download"></i> 7.3k</span></div><p>Fast‑paced robot destruction.</p></div>
+            <button class="play-btn" onclick="alert('Game demo – full version coming soon')">Play Now <i class="fas fa-arrow-right"></i></button>
+            <div class="card-footer"><span><i class="fas fa-crosshairs"></i> action</span><span>🔫 intense</span></div>
+        </div>
+        <div class="game-card">
+            <div class="card-img"><i class="fas fa-microphone-alt"></i><span class="category-tag">rhythm</span></div>
+            <div class="card-content"><h3>Beat Runner</h3><div class="card-meta"><span><i class="fas fa-star"></i> 4.8</span><span><i class="fas fa-download"></i> 6.7k</span></div><p>Music‑based runner game.</p></div>
+            <button class="play-btn" onclick="alert('Game demo – full version coming soon')">Play Now <i class="fas fa-arrow-right"></i></button>
+            <div class="card-footer"><span><i class="fas fa-headphones"></i> rhythm</span><span>🎵 catchy</span></div>
+        </div>
+        <div class="game-card">
+            <div class="card-img"><i class="fas fa-futbol"></i><span class="category-tag">sports</span></div>
+            <div class="card-content"><h3>Volley Strike</h3><div class="card-meta"><span><i class="fas fa-star"></i> 4.4</span><span><i class="fas fa-download"></i> 2.3k</span></div><p>Volleyball arcade action.</p></div>
+            <button class="play-btn" onclick="alert('Game demo – full version coming soon')">Play Now <i class="fas fa-arrow-right"></i></button>
+            <div class="card-footer"><span><i class="fas fa-volleyball-ball"></i> 2 player</span><span>🏐 rally</span></div>
+        </div>
+        <div class="game-card">
+            <div class="card-img"><i class="fas fa-hat-cowboy"></i><span class="category-tag">western</span></div>
+            <div class="card-content"><h3>Wild West Duel</h3><div class="card-meta"><span><i class="fas fa-star"></i> 4.5</span><span><i class="fas fa-download"></i> 4.0k</span></div><p>Quick draw & showdowns.</p></div>
+            <button class="play-btn" onclick="alert('Game demo – full version coming soon')">Play Now <i class="fas fa-arrow-right"></i></button>
+            <div class="card-footer"><span><i class="fas fa-gun"></i> shooter</span><span>🤠 wild</span></div>
+        </div>
+        <!-- 15th card ends -->
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-inner">
+            <div class="footer-col"><h4>PLAYBOX</h4><p style="font-size:0.8rem;">Next‑gen game index<br />Cards, multi‑column, responsive.</p></div>
+            <div class="footer-col"><h4>Explore</h4><a href="#">All games</a><a href="#">Categories</a><a href="#">Top charts</a></div>
+            <div class="footer-col"><h4>Resources</h4><a href="#">Embed API</a><a href="#">Submit game</a><a href="#">Support</a></div>
+            <div class="footer-col"><h4>Legal</h4><a href="#">Privacy</a><a href="#">Terms</a></div>
+        </div>
+        <div class="copyright">
+            <p>© 2025 Playbox – premium card grid. Scroll to see adaptive columns (4–6 on desktop, 1 on mobile). All games are demo placeholders.</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Simple console greeting – no functionality needed
+    console.log("Playbox | Multi‑column grid ready. Cards adapt from 1 to 6 columns based on screen width.");
+</script>
 </body>
 </html>
